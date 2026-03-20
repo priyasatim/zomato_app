@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'DeliveryInfoRow.dart';
-import 'QuantityBox.dart';
+import '/Widgets/DeliveryInfoRow.dart';
+import '../Widgets/QuantityBox.dart';
 
 class ViewCartPage extends StatelessWidget {
   @override

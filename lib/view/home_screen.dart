@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zomato_app/view/SliderPage.dart';
+import 'package:zomato_app/Widgets/SliderPage.dart';
 import 'package:zomato_app/view/explore_more.dart';
 import 'package:zomato_app/view/category_screen.dart';
 import 'package:zomato_app/view/product_details_screen.dart';
@@ -80,6 +80,11 @@ class _HomePageState extends State<HomePage> {
 
     _controllers = List.generate(rowsData.length, (_) => ScrollController());
 
+    _setupScrollSync();
+
+  }
+
+  void _setupScrollSync() {
     for (int i = 0; i < _controllers.length; i++) {
       _controllers[i].addListener(() {
         if (_isSyncing) return; // skip if we are syncing
@@ -96,18 +101,21 @@ class _HomePageState extends State<HomePage> {
         _isSyncing = false;
       });
     }
-
   }
 
   @override
   void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
+    _disposeScrollSync();
     super.dispose();
   }
 
-  @override
+  void _disposeScrollSync() {
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
+  }
+
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF8F8F8),
@@ -629,6 +637,7 @@ class _HomePageState extends State<HomePage> {
               .join(', ');
     });
   }
+
 }
 
 Widget _bottomItem(IconData icon, String label) {
@@ -641,3 +650,4 @@ Widget _bottomItem(IconData icon, String label) {
     ],
   );
 }
+

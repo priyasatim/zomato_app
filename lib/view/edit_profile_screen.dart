@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class EditProfilePage extends StatelessWidget {
   var userName;
@@ -171,10 +173,7 @@ class EditProfilePage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Save logic here
-                  print(
-                    "Saved: ${_nameController.text}, ${_mobileController.text}, ${_emailController.text}",
-                  );
+                  saveUserData();
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(SnackBar(content: Text("Profile saved!")));
@@ -210,5 +209,15 @@ class EditProfilePage extends StatelessWidget {
       controller.text =
           "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
     }
+  }
+
+
+  Future<void> saveUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString("name", _nameController.text);
+    await prefs.setString("mobile", _mobileController.text);
+    await prefs.setString("dob", _dobController.text);
+    await prefs.setString("gender", _selectedGender ?? "");
   }
 }

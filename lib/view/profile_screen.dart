@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:zomato_app/view/edit_profile_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class ProfilePage extends StatelessWidget {
-  final String userName = "Priyanka";
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  String userName = "Priyanka";
+  String mobile = "";
+  String dob = "";
+  String gender = "";
 
   final List<Map<String, dynamic>> menuItems = [
     {
@@ -23,6 +32,11 @@ class ProfilePage extends StatelessWidget {
     {"icon": Icons.person, "title": "Your collections"},
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    getUserData();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,11 +91,12 @@ class ProfilePage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditProfilePage(userName: userName),
+                                    builder: (context) => EditProfilePage(userName: userName),
                                   ),
-                                );
-                              },
+                                ).then((_) {
+                                  getUserData();
+                                });
+                                },
                               child: Text(
                                 "Edit Profile",
                                 style: TextStyle(
@@ -260,4 +275,16 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      userName = prefs.getString("name") ?? "";
+      mobile = prefs.getString("mobile") ?? "";
+      dob = prefs.getString("dob") ?? "";
+      gender = prefs.getString("gender") ?? "";
+    });
+  }
+
 }

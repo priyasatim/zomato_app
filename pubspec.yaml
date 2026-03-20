@@ -52,7 +52,7 @@ dev_dependencies:
   geocoding: ^2.1.0
   google_fonts: ^6.0.0
   image_picker: ^1.0.7
-  shared_preferences: ^2.2.2
+  shared_preferences: ^2.5.4
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

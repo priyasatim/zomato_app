@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:zomato_app/view/QuantityBox.dart';
+import 'package:zomato_app/Widgets/QuantityBox.dart';
 
 class ProductDetailPage extends StatelessWidget {
    final Map<String, String> item;
