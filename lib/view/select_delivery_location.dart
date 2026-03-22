@@ -1,245 +1,308 @@
-// import 'package:flutter/material.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
-//
-// class SelectDeliveryLocationPage extends StatefulWidget {
-//   const SelectDeliveryLocationPage({super.key});
-//
-//   @override
-//   State<SelectDeliveryLocationPage> createState() => _LocationScreenState();
-// }
-//
-// class _LocationScreenState extends State<SelectDeliveryLocationPage> {
-//   GoogleMapController? mapController;
-//
-//   final LatLng initialPosition =
-//   const LatLng(19.1176, 72.9060); // Andheri East
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//
-//       /// 🔹 APP BAR + SEARCH
-//       body: SafeArea(
-//         child: Stack(
-//           children: [
-//             Column(
-//               children: [
-//                 _topBar(),
-//                 Expanded(child: _mapView()),
-//               ],
-//             ),
-//
-//             /// 🔹 BOTTOM SHEET
-//             _bottomSheet(),
-//
-//             /// 🔹 SAVE BUTTON
-//             _saveButton(),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-//   /// 🔹 TOP BAR
-//   Widget _topBar() {
-//     return Padding(
-//       padding: const EdgeInsets.all(12),
-//       child: Column(
-//         children: [
-//           Row(
-//             children: const [
-//               Icon(Icons.arrow_back),
-//               SizedBox(width: 10),
-//               Text(
-//                 "Select delivery location",
-//                 style: TextStyle(
-//                   fontSize: 18,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               )
-//             ],
-//           ),
-//           const SizedBox(height: 12),
-//
-//           /// SEARCH
-//           Container(
-//             padding: const EdgeInsets.symmetric(horizontal: 12),
-//             height: 50,
-//             decoration: BoxDecoration(
-//               color: Colors.grey.shade100,
-//               borderRadius: BorderRadius.circular(12),
-//             ),
-//             child: Row(
-//               children: const [
-//                 Icon(Icons.search, color: Colors.red),
-//                 SizedBox(width: 8),
-//                 Text(
-//                   "Search for area, street name...",
-//                   style: TextStyle(color: Colors.grey),
-//                 )
-//               ],
-//             ),
-//           )
-//         ],
-//       ),
-//     );
-//   }
-//
-//   /// 🔹 GOOGLE MAP
-//   Widget _mapView() {
-//     return GoogleMap(
-//       initialCameraPosition: CameraPosition(
-//         target: initialPosition,
-//         zoom: 14,
-//       ),
-//       onMapCreated: (controller) {
-//         print("MAP CREATED");
-//         mapController = controller;
-//       },
-//       myLocationEnabled: true,
-//       myLocationButtonEnabled: true,
-//     );
-//   }
-//
-//   /// 🔹 DRAGGABLE BOTTOM SHEET
-//   Widget _bottomSheet() {
-//     return DraggableScrollableSheet(
-//       initialChildSize: 0.35,
-//       minChildSize: 0.3,
-//       maxChildSize: 0.7,
-//       builder: (context, controller) {
-//         return Container(
-//           padding: const EdgeInsets.all(16),
-//           decoration: const BoxDecoration(
-//             color: Colors.white,
-//             borderRadius: BorderRadius.vertical(
-//               top: Radius.circular(20),
-//             ),
-//           ),
-//           child: SingleChildScrollView(
-//             controller: controller,
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.start,
-//               children: [
-//
-//                 /// DRAG HANDLE
-//                 Center(
-//                   child: Container(
-//                     width: 40,
-//                     height: 5,
-//                     margin: const EdgeInsets.only(bottom: 10),
-//                     decoration: BoxDecoration(
-//                       color: Colors.grey.shade300,
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                   ),
-//                 ),
-//
-//                 const Text(
-//                   "Delivery details",
-//                   style: TextStyle(
-//                     fontSize: 16,
-//                     color: Colors.grey,
-//                   ),
-//                 ),
-//                 const SizedBox(height: 12),
-//
-//                 /// ADDRESS CARD
-//                 Container(
-//                   padding: const EdgeInsets.all(12),
-//                   decoration: BoxDecoration(
-//                     border: Border.all(color: Colors.grey.shade300),
-//                     borderRadius: BorderRadius.circular(12),
-//                   ),
-//                   child: Row(
-//                     children: const [
-//                       Icon(Icons.location_on, color: Colors.red),
-//                       SizedBox(width: 10),
-//                       Expanded(
-//                         child: Text(
-//                           "Mahakali Darshan, Gundavali Gaothan, Andheri East, Mumbai",
-//                           style: TextStyle(fontWeight: FontWeight.w600),
-//                         ),
-//                       ),
-//                       Icon(Icons.arrow_forward_ios, size: 14)
-//                     ],
-//                   ),
-//                 ),
-//
-//                 const SizedBox(height: 16),
-//
-//                 /// ADDRESS FIELD
-//                 _textField("Address details*"),
-//
-//                 const SizedBox(height: 6),
-//                 const Text(
-//                   "E.g. Floor, House no.",
-//                   style: TextStyle(color: Colors.grey, fontSize: 12),
-//                 ),
-//
-//                 const SizedBox(height: 16),
-//
-//                 const Text(
-//                   "Receiver details for this address",
-//                   style: TextStyle(fontWeight: FontWeight.w500),
-//                 ),
-//
-//                 const SizedBox(height: 10),
-//
-//                 _textField("Name"),
-//                 const SizedBox(height: 10),
-//                 _textField("Phone number"),
-//               ],
-//             ),
-//           ),
-//         );
-//       },
-//     );
-//   }
-//
-//   /// 🔹 TEXT FIELD
-//   Widget _textField(String hint) {
-//     return Container(
-//       height: 50,
-//       padding: const EdgeInsets.symmetric(horizontal: 12),
-//       decoration: BoxDecoration(
-//         color: Colors.grey.shade100,
-//         borderRadius: BorderRadius.circular(12),
-//       ),
-//       child: Align(
-//         alignment: Alignment.centerLeft,
-//         child: Text(
-//           hint,
-//           style: const TextStyle(color: Colors.grey),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   /// 🔹 SAVE BUTTON
-//   Widget _saveButton() {
-//     return Positioned(
-//       bottom: 10,
-//       left: 16,
-//       right: 16,
-//       child: Container(
-//         height: 55,
-//         decoration: BoxDecoration(
-//           color: Colors.red,
-//           borderRadius: BorderRadius.circular(14),
-//         ),
-//         child: const Center(
-//           child: Text(
-//             "Save address",
-//             style: TextStyle(
-//               color: Colors.white,
-//               fontSize: 16,
-//               fontWeight: FontWeight.bold,
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+class MapAutoCompletePage extends StatefulWidget {
+  const MapAutoCompletePage({super.key});
+
+  @override
+  State<MapAutoCompletePage> createState() => _MapAutoCompletePageState();
+}
+
+class _MapAutoCompletePageState extends State<MapAutoCompletePage> {
+  GoogleMapController? mapController;
+
+  final LatLng initialPosition = const LatLng(19.1176, 72.9060);
+
+  LatLng? selectedLatLng;
+  String selectedAddress = "Search location";
+
+  final TextEditingController controller = TextEditingController();
+
+  final String apiKey =
+      "AIzaSyAzx15rc8UbEQgUFAcYZlc5Xc0Kg7xOU5o"; // 🔴 add your key
+
+  String name = "";
+  String mobile = "";
+
+
+  @override
+  void initState() {
+    loadUserData();
+    super.initState();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          /// 🗺 GOOGLE MAP
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: initialPosition,
+              zoom: 14,
+            ),
+            onMapCreated: (c) => mapController = c,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+
+            /// ✅ ADD THIS
+            onTap: (LatLng position) async {
+              FocusScope.of(context).unfocus(); // close search
+
+              setState(() {
+                selectedLatLng = position;
+                selectedAddress = "Loading...";
+              });
+
+              String address = await getAddressFromLatLng(
+                  position.latitude, position.longitude);
+
+              setState(() {
+                selectedAddress = address;
+              });
+
+              mapController?.animateCamera(CameraUpdate.newLatLng(position));
+            },
+
+            markers: selectedLatLng == null
+                ? {}
+                : {
+                    Marker(
+                      markerId: const MarkerId("selected"),
+                      position: selectedLatLng!,
+                    ),
+                  },
+          ),
+
+          /// 🔍 SEARCH BAR
+          Positioned(
+            top: 50,
+            left: 16,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(blurRadius: 5, color: Colors.black12),
+                ],
+              ),
+              child: GooglePlaceAutoCompleteTextField(
+                textEditingController: controller,
+                googleAPIKey: apiKey,
+
+                inputDecoration: const InputDecoration(
+                  hintText: "Search location...",
+                  border: InputBorder.none,
+                  prefixIcon: Icon(Icons.search),
+                ),
+
+                debounceTime: 800,
+                countries: ["in"],
+
+                // optional
+                isLatLngRequired: true,
+
+                /// 📍 When user selects place
+                getPlaceDetailWithLatLng: (prediction) {
+                  final lat = double.parse(prediction.lat!);
+                  final lng = double.parse(prediction.lng!);
+
+                  setState(() {
+                    selectedLatLng = LatLng(lat, lng);
+                    selectedAddress = prediction.description!;
+                  });
+
+                  mapController?.animateCamera(
+                    CameraUpdate.newLatLng(selectedLatLng!),
+                  );
+                },
+
+                /// 👆 When user taps suggestion
+                itemClick: (prediction) {
+                  controller.text = prediction.description!;
+                  controller.selection = TextSelection.fromPosition(
+                    TextPosition(offset: prediction.description!.length),
+                  );
+                },
+              ),
+            ),
+          ),
+
+          /// 📦 BOTTOM ADDRESS CARD
+          Positioned(
+            bottom: 20,
+            left: 16,
+            right: 16,
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(blurRadius: 5, color: Colors.black12),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Delivery details",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                  const SizedBox(height: 12),
+
+                  /// ADDRESS CARD
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.location_on, color: Colors.red),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            selectedAddress,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        const Icon(Icons.arrow_forward_ios, size: 14),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+                  const Text(
+                    "E.g. Floor, House no.",
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  const Text(
+                    "Receiver details for this address",
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  _textField("Name",name),
+                  const SizedBox(height: 10),
+                  _textField("Phone number",mobile),
+                  const SizedBox(height: 10),
+                  GestureDetector(
+                    onTap: () {
+                      print("Save address tapped");
+
+                      // 👉 your logic here
+                      saveAddress();
+                    },
+                    child: Container(
+                      height: 50,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          "Save address",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _textField(String hint,String value) {
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text((value != null && value.isNotEmpty) ? value : hint, style: const TextStyle(color: Colors.grey)),
+      ),
+    );
+  }
+
+
+  Future<String> getAddressFromLatLng(double lat, double lng) async {
+    try {
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(lat, lng);
+
+      Placemark place = placemarks.first;
+      String address = formatAddress(place);
+
+      return address;
+    } catch (e) {
+      print("Error: $e");
+      return "Unable to get address";
+    }
+  }
+
+  String formatAddress(Placemark place) {
+    return [
+      place.name,
+      place.street,
+      place.subLocality,
+      place.locality,
+      place.administrativeArea,
+      place.postalCode,
+      place.country
+    ]
+        .where((e) => e != null && e!.isNotEmpty)
+        .join(", ");
+  }
+
+  Future<void> loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      name = prefs.getString("name") ?? "";
+      mobile = prefs.getString("mobile") ?? "";
+      selectedAddress = prefs.getString("address") ?? "";
+    });
+  }
+
+  Future<void> saveAddress() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString("address", selectedAddress);
+
+    Fluttertoast.showToast(
+      msg: "Address saved successfully",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 14.0,
+    );
+
+    // 👉 Close screen
+    Navigator.pop(context);
+  }
+}

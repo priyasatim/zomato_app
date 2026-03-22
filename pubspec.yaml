@@ -53,10 +53,9 @@ dev_dependencies:
   geocoding: ^2.1.0
   image_picker: ^1.0.7
   shared_preferences: ^2.5.4
-#  google_maps_flutter: ^2.6.0
-#  flutter_google_places: ^0.3.0
-#  google_maps_webservice: ^0.0.19
-
+  google_maps_flutter: ^2.6.0
+  google_places_flutter: ^2.0.6
+  fluttertoast: ^8.2.4
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -140,5 +139,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-#dependency_overrides:
-#  google_api_headers: ^4.3.0
+dependency_overrides:
+  google_api_headers: ^4.3.0

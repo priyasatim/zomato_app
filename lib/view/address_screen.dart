@@ -478,11 +478,11 @@ class _LocationPageState extends State<LocationPage> {
           // Add Address
           GestureDetector(
             onTap: () async {
-              // await Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (_) => SelectDeliveryLocationPage(),
-              //     ));
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => MapAutoCompletePage(),
+                  ));
               },
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

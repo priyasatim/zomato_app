@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:zomato_app/Widgets/SliderPage.dart';
 import 'package:zomato_app/Widgets/app_circle_icon.dart';
-import 'package:zomato_app/Widgets/food_item_card.dart';
 import 'package:zomato_app/Widgets/explore_more.dart';
+import 'package:zomato_app/bloc/category/categories_repository.dart';
+import 'package:zomato_app/repository/category_repository.dart';
+import 'package:zomato_app/bloc/category/category_event.dart';
 import 'package:zomato_app/view/category_screen.dart';
 import 'package:zomato_app/view/product_details_screen.dart';
 import 'package:zomato_app/view/profile_screen.dart';
 import 'package:zomato_app/view/search_page.dart';
-import 'package:zomato_app/view/view_cart_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../Widgets/BottomSheetScrollUI.dart';
 import '../Widgets/FilterBottomSheet.dart';
@@ -15,7 +18,8 @@ import '../Widgets/RestaurantCard.dart';
 import '../Widgets/horizontal_filter_bar.dart';
 import '../Widgets/rating_badge.dart';
 import '../Widgets/veg_nonveg_toggle.dart';
-import '../Widgets/view_cart_bar.dart';
+import '../bloc/category/category_bloc.dart';
+import '../bloc/category/category_state.dart';
 import '../database/CartService.dart';
 import 'address_screen.dart';
 import 'package:geolocator/geolocator.dart';
@@ -34,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   int cartCount = 0;
   late ScrollController _scrollController;
   bool showHome = true;
+  late final CategoryBloc categoryBloc;
 
   final List<Map<String, String>> explore_more = [
     {"name": "Offers", "image": "assets/images/price_tag.png"},
@@ -43,14 +48,7 @@ class _HomePageState extends State<HomePage> {
     {"name": "Gift cards", "image": "assets/images/gift_cards.png"},
   ];
 
-  final List<Map<String, String>> categories = [
-    {"name": "All", "image": "assets/images/all.png"},
-    {"name": "Burger", "image": "assets/images/burger.png"},
-    {"name": "Cake", "image": "assets/images/cake.png"},
-    {"name": "Fries", "image": "assets/images/fries.png"},
-    {"name": "Chicken", "image": "assets/images/chicken.png"},
-    {"name": "Waffle", "image": "assets/images/waffle.png"},
-  ];
+
 
   final List<Map<String, String>> items = [
     {
@@ -109,7 +107,7 @@ class _HomePageState extends State<HomePage> {
     ],
   ];
 
-  // Sample filter data
+  // filter data
   final List<String> filters = [
     "Filters",
     "Near & Fast",
@@ -118,12 +116,17 @@ class _HomePageState extends State<HomePage> {
     "Pure Veg",
   ];
 
+  final List<Map<String, String>> categories = [];
+
   @override
   void initState() {
     super.initState();
     _loadCartCount();
+    categoryBloc = CategoryBloc(
+      repository: CategoriesRepository(),
+    )..add(LoadCategories());
 
-    _getCurrentLocation();
+    checkAddressAndFetch();
 
     _controllers = List.generate(rowsData.length, (_) => ScrollController());
 
@@ -180,7 +183,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocProvider(
+      create: (_) => CategoryBloc(
+        repository: CategoriesRepository(),
+      )..add(LoadCategories()),
+      child : Scaffold(
       backgroundColor: Color(0xFFF8F8F8),
       body: Stack(
         children: [
@@ -374,14 +381,79 @@ class _HomePageState extends State<HomePage> {
               ),
 
               // Categories
-              SliverPersistentHeader(
-                pinned: true,
-                delegate: CategoryScreen(categories),
+              BlocBuilder<CategoryBloc, CategoryState>(
+                builder: (context, state) {
+                  if (state is CategoryLoading) {
+                    return SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 100,
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                    );
+                  }
+
+                  if (state is CategoryLoaded) {
+                    return SliverPersistentHeader(
+                      pinned: true,
+                      delegate: CategoryScreen(
+                        state.categories.map((e) => {
+                          "name": e.name,
+                          "image": e.image,
+                        }).toList(),
+                      ),
+                    );
+                  }
+
+                  if (state is CategoryError) {
+                    return SliverToBoxAdapter(
+                      child: Text(state.message),
+                    );
+                  }
+
+                  return const SliverToBoxAdapter(child: SizedBox());
+                },
               ),
 
-
               SliverToBoxAdapter(
-                child: HorizontalFilterBar(filters: filters, onTap: (int index, String value) {  },)
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  child: Row(
+                    children: filters.map((filter) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () {
+
+                            if (filters[0] == filter) {
+
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => FilterBottomSheet(),
+                              );
+                            }
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: Text(
+                              filter,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                )
               ),
 
               SliverToBoxAdapter(
@@ -489,7 +561,7 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Stack(
                               children: [
-                                /// 🔹 IMAGE
+                                /// IMAGE
                                 ClipRRect(
                                   borderRadius: const BorderRadius.vertical(
                                     top: Radius.circular(16),
@@ -502,7 +574,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
-                                /// 🔹 LEFT TEXT (e.g. "Pure Veg ₹200 for one")
+                                /// LEFT TEXT
                                 Positioned(
                                   top: 8,
                                   left: 8,
@@ -686,7 +758,7 @@ class _HomePageState extends State<HomePage> {
           // ),
         ],
       ),
-    );
+    ));
   }
 
   Future<void> _getCurrentLocation() async {
@@ -730,7 +802,7 @@ class _HomePageState extends State<HomePage> {
 
     Placemark place = placemarks[0];
 
-    setState(() {
+    setState(() async {
       currentLocation = [
         place.name,
         place.subThoroughfare,
@@ -741,18 +813,26 @@ class _HomePageState extends State<HomePage> {
         place.postalCode,
         place.country,
       ].where((e) => e != null && e!.trim().isNotEmpty).join(', ');
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString("address", currentLocation);
     });
   }
-}
 
-Widget _bottomItem(IconData icon, String label) {
-  return Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      Icon(icon, size: 20, color: Colors.grey[800]),
-      const SizedBox(height: 2),
-      Text(label, style: const TextStyle(fontSize: 8, color: Colors.black)),
-    ],
-  );
+  Future<void> checkAddressAndFetch() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    String address = prefs.getString("address") ?? "";
+
+    if (address.isEmpty) {
+      // 👉 No saved address → get current location
+      _getCurrentLocation();
+    } else {
+      // 👉 Address already saved
+      setState(() {
+        currentLocation = address;
+      });
+    }
+  }
 }
 
