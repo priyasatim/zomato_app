@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 
+import 'select_delivery_location.dart';
+
 class LocationPage extends StatefulWidget {
   const LocationPage({super.key});
 
@@ -475,9 +477,13 @@ class _LocationPageState extends State<LocationPage> {
           Divider(height: 0.5, color: Colors.grey[100]),
           // Add Address
           GestureDetector(
-            onTap: () {
-              // navigate to add address page
-            },
+            onTap: () async {
+              // await Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (_) => SelectDeliveryLocationPage(),
+              //     ));
+              },
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               child: Row(
@@ -544,6 +550,9 @@ class _LocationPageState extends State<LocationPage> {
       position.latitude,
       position.longitude,
     );
+    print(position.latitude);
+    print(position.longitude);
+
 
     Placemark place = placemarks[0];
 

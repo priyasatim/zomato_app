@@ -57,6 +57,14 @@ class DeliveryInfoRow extends StatelessWidget {
             ],
           ),
         ),
+
+        // Arrow
+        Icon(
+          Icons.keyboard_arrow_right,
+          color: Colors.grey,
+          size: 20,
+        )
+
       ],
     );
   }

@@ -33,7 +33,7 @@ class ExploreMoreScreen extends SliverPersistentHeaderDelegate {
                 SizedBox(height: 4),
                 Text(
                   cat["name"]!,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 12),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -47,10 +47,10 @@ class ExploreMoreScreen extends SliverPersistentHeaderDelegate {
 
 
   @override
-  double get maxExtent => 100;
+  double get maxExtent => 120;
 
   @override
-  double get minExtent => 100;
+  double get minExtent => 120;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>

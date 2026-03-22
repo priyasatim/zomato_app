@@ -1,21 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zomato_app/Utility/app_colors.dart';
 import 'package:zomato_app/Widgets/QuantityBox.dart';
+import 'package:zomato_app/Widgets/rating_badge.dart';
 
+import '../Widgets/app_circle_icon.dart';
+import '../Widgets/horizontal_filter_bar.dart';
+import '../Widgets/icon_text_chip.dart';
+import '../Widgets/recommend_progressbar.dart';
 import '../database/CartService.dart';
 
 class ProductDetailPage extends StatelessWidget {
-   final Map<String, String> item;
+  final Map<String, String> item;
 
-   ProductDetailPage({super.key, required this.item});
+  ProductDetailPage({super.key, required this.item});
 
-   final List<Map<String, String>> products = [
+  final List<Map<String, String>> products = [
     {
       "type": "Veg",
       "name": "Margherita Pizza",
       "price": "₹250",
       "desc": "Cheese, Tomato, Basil",
-      "image": "assets/images/pizza.png",
+      "image": "assets/images/pizza.jpg",
       "restaurant_name": "Dominos",
     },
     {
@@ -23,7 +29,7 @@ class ProductDetailPage extends StatelessWidget {
       "name": "Chicken Burger",
       "price": "₹180",
       "desc": "Grilled Chicken with Cheese",
-      "image": "assets/images/burger.png",
+      "image": "assets/images/burger.jpg",
       "restaurant_name": "MCD",
     },
     {
@@ -36,208 +42,242 @@ class ProductDetailPage extends StatelessWidget {
     },
   ];
 
+  // Sample filter data
+  final List<String> filters = ["Filters", "Highly Reordered", "Spicy"];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Restaurant name & Ratings
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      backgroundColor: Color(0xFFF8F8F8),
+      appBar: AppBar(backgroundColor: Colors.white),
+      body: Column(
+        children: [
+          /// 🔹 1. FLAT OFFER SECTION
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white, // ✅ moved here
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  item["title"] ?? "Product Detail",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                IconTextChip(
+                  icon: null,
+                  image: "assets/images/leaf.png",
+                  text: "Pure veg",
+                  textColor: AppColors.darkGreen,
+                  backgroundColor: Colors.green.shade50,
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Color(0xFF083E11), // light background for the oval
-                    borderRadius: BorderRadius.circular(20), // makes it oval
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min, // shrink to content
-                    children: const [
-                      Icon(Icons.star, color: Colors.white, size: 16),
-                      SizedBox(width: 4),
-                      Text(
-                        "4.5",
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+
+                // Restaurant name & Ratings
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      item["title"] ?? "Product Detail",
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                )
-              ],
-            ),
-            const SizedBox(height: 8),
-
-            // Minutes & Nearby
-            Row(
-              children: const [
-                Icon(Icons.location_on, size: 14, color: Colors.grey),
-                SizedBox(width: 4),
-                Text("Nearby"),
-              ],
-            ),
-
-            Row(
-              children: const [
-                Icon(Icons.access_time, size: 14, color: Colors.grey),
-                SizedBox(width: 4),
-                Text("15-20 mins"),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // On time preparation, Melt Safe packing
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Text("On time Preparation"),
+                    ),
+                    RatingBadge(rating: "4.5"),
+                  ],
                 ),
+                const SizedBox(height: 6),
+
+                // Minutes & Nearby
+                Row(
+                  children: const [
+                    Icon(Icons.location_on, size: 16, color: Colors.grey),
+                    SizedBox(width: 4),
+                    Text("Nearby", style: TextStyle(fontSize: 12)),
+                  ],
+                ),
+                const SizedBox(height: 6),
+
+                Row(
+                  children: const [
+                    Icon(Icons.access_time, size: 16, color: Colors.grey),
+                    SizedBox(width: 4),
+                    Text("15-20 mins", style: TextStyle(fontSize: 12)),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                Divider(thickness: 0.5, color: Colors.grey.shade300),
+
+                IconTextChip(
+                  icon: null,
+                  image: "assets/filters/discount.png",
+                  text: "Flat 60 OFF above 290",
+                  textColor: Colors.black,
+                ),
+
+                const SizedBox(height: 2),
               ],
             ),
-            const SizedBox(height: 12),
+          ),
 
-            // // 5 - Filters Veg / Non-Veg
-            // Row(
-            //   children: [
-            //     FilterChip(
-            //       label: const Text("Veg"),
-            //       selected: true,
-            //       onSelected: (val) {},
-            //       backgroundColor: Colors.green[100],
-            //       selectedColor: Colors.green[300],
-            //     ),
-            //     const SizedBox(width: 8),
-            //     FilterChip(
-            //       label: const Text("Non-Veg"),
-            //       selected: true,
-            //       onSelected: (val) {},
-            //       backgroundColor: Colors.red[100],
-            //       selectedColor: Colors.red[300],
-            //     ),
-            //   ],
-            // ),
-            // const SizedBox(height: 16),
+          const SizedBox(height: 12),
 
-            // 6 - Recommended for you
-            const Text(
-              "Recommended for you",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          /// 🔹 2. FILTER SECTION (STICKY READY)
+          Container(
+            color: Colors.white,
+            alignment: Alignment.centerLeft,
+            child: HorizontalFilterBar(
+              filters: filters,
+              onTap: (index, value) {},
             ),
-            const SizedBox(height: 12),
+          ),
 
-            // Row 7 - Product List
-            ListView.separated(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: products.length,
-                separatorBuilder: (_, __) => const Divider(
-                  color: Colors.grey,
-                  thickness: 0.5,
-                  height: 12,
-                ),
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return Container(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    children: [
-                      // Left: Veg/NonVeg and details
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              product["type"]!,
-                              style: TextStyle(
-                                  color: product["type"] == "Veg"
-                                      ? Colors.green
-                                      : Colors.red,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              product["name"]!,
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              product["desc"]!,
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.grey),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              product["price"]!,
-                              style: const TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
+          const SizedBox(height: 2),
+
+          /// 🔹 3. PRODUCT SECTION
+          Expanded(
+            // ✅ MOVE HERE
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// TITLE
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      "Recommended for you",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
+                    ),
+                  ),
 
-                      // Right: Image + Add button
-                      Column(
-                        children: [
-                          Stack(
-                            alignment: Alignment.bottomCenter,
+                  const SizedBox(height: 2),
+
+                  /// LIST (NO Expanded here)
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: products.length,
+                      separatorBuilder: (_, __) =>  Divider(
+                        color: Colors.grey.shade300,
+                        thickness: 0.5,
+                        height: 12,
+                      ),
+                      itemBuilder: (context, index) {
+                        final product = products[index];
+
+                        return Container(
+                          padding: const EdgeInsets.all(12),
+                          child: Row(
                             children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image.asset(
-                                  product["image"]!,
-                                  width: 100,
-                                  height: 100,
-                                  fit: BoxFit.contain, // use cover to fill nicely
+                              // Left: Veg/NonVeg and details
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/veg.jpg",
+                                      height: 15,
+                                      width: 15,
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      product["name"]!,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      product["desc"]!,
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.black38,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    RecommendationProgressBar(progress:3,text: "Highly reordered"),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      product["price"]!,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Row(
+                                      children: [
+                                        AppCircleIcon(
+                                          icon: Icons.bookmark_border,
+                                          iconSize: 15,
+                                          backgroundColor: Colors.grey.shade200,
+                                          padding: 0,
+                                        ),
+                                        SizedBox(width: 10),
+                                        AppCircleIcon(
+                                          imagePath: "assets/images/share.png",iconSize: 15,
+                                          backgroundColor: Colors.grey.shade200,
+                                          padding: 0,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Positioned(
-                                bottom: 4, // a little padding from bottom
-                                child: QuantityBox(
-                                  initialCount: 1,
-                                  onChanged: (value) async {
-                                    await CartService().addProduct(
-                                      id:"1",
-                                      name: product["name"]!,
-                                      price: 300.0,
-                                      restaurant:  "Dominos",
-                                      location: "Mumbai",
-                                    );
-                                    },
-                                ),
+
+                              // Right: Image + Add button
+                              Stack(
+                                clipBehavior: Clip.none, // 👈 VERY IMPORTANT
+                                alignment: Alignment.center,
+                                children: [
+                                  /// IMAGE
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.asset(
+                                      product["image"]!,
+                                      width: 120,
+                                      height: 120,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+
+                                  /// QUANTITY BOX (half inside, half outside)
+                                  Positioned(
+                                    bottom: -12, // 👈 move outside image
+                                    left: 0,
+                                    right: 0,
+                                    child: Center(
+                                      child: QuantityBox(
+                                        initialCount: 1,
+                                        onChanged: (value) async {
+                                          await CartService().addProduct(
+                                            id: "1",
+                                            name: product["name"]!,
+                                            price: 300.0,
+                                            restaurant: "Dominos",
+                                            location: "Mumbai",
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                    ],
+                        );
+                      },
+                    ),
                   ),
-                );
-              },
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      backgroundColor: Colors.grey[100],
     );
   }
 }

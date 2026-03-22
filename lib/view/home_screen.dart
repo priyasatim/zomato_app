@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:zomato_app/Widgets/SliderPage.dart';
-import 'package:zomato_app/view/explore_more.dart';
+import 'package:zomato_app/Widgets/app_circle_icon.dart';
+import 'package:zomato_app/Widgets/food_item_card.dart';
+import 'package:zomato_app/Widgets/explore_more.dart';
 import 'package:zomato_app/view/category_screen.dart';
 import 'package:zomato_app/view/product_details_screen.dart';
 import 'package:zomato_app/view/profile_screen.dart';
 import 'package:zomato_app/view/search_page.dart';
 import 'package:zomato_app/view/view_cart_screen.dart';
 
+import '../Widgets/BottomSheetScrollUI.dart';
+import '../Widgets/FilterBottomSheet.dart';
+import '../Widgets/RestaurantCard.dart';
+import '../Widgets/horizontal_filter_bar.dart';
+import '../Widgets/rating_badge.dart';
+import '../Widgets/veg_nonveg_toggle.dart';
+import '../Widgets/view_cart_bar.dart';
+import '../database/CartService.dart';
 import 'address_screen.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -21,11 +31,16 @@ class _HomePageState extends State<HomePage> {
   String currentLocation = "Fetching location...";
   List<ScrollController> _controllers = [];
   bool _isSyncing = false;
-
+  int cartCount = 0;
+  late ScrollController _scrollController;
+  bool showHome = true;
 
   final List<Map<String, String>> explore_more = [
     {"name": "Offers", "image": "assets/images/price_tag.png"},
     {"name": "Food on train", "image": "assets/images/train.jpg"},
+    {"name": "Crowd favourites", "image": "assets/images/crowd_fav.jpg"},
+    {"name": "Plan a party", "image": "assets/images/party_food.png"},
+    {"name": "Gift cards", "image": "assets/images/gift_cards.png"},
   ];
 
   final List<Map<String, String>> categories = [
@@ -59,22 +74,54 @@ class _HomePageState extends State<HomePage> {
 
   final rowsData = [
     [
-      {"image": "assets/images/pizza.jpg", "title": "Domino's Pizza","timing":"12-15mins"},
-      {"image": "assets/images/burger.jpg", "title": "7Eleven","timing":"20-25mins"},
-      {"image": "assets/images/salad.jpg", "title": "Salad","timing":"30-40mins"},
+      {
+        "image": "assets/images/pizza.jpg",
+        "title": "Domino's Pizza",
+        "timing": "12-15mins",
+      },
+      {
+        "image": "assets/images/burger.jpg",
+        "title": "7Eleven",
+        "timing": "20-25mins",
+      },
+      {
+        "image": "assets/images/salad.jpg",
+        "title": "Salad",
+        "timing": "30-40mins",
+      },
     ],
     [
-      {"image": "assets/images/salad.jpg", "title": "Salad","timing":"40-45mins"},
-      {"image": "assets/images/pizza.jpg", "title": "Pizza","timing":"12-15mins"},
-      {"image": "assets/images/burger.jpg", "title": "Burger","timing":"45-50mins"},
+      {
+        "image": "assets/images/salad.jpg",
+        "title": "Salad",
+        "timing": "40-45mins",
+      },
+      {
+        "image": "assets/images/pizza.jpg",
+        "title": "Pizza",
+        "timing": "12-15mins",
+      },
+      {
+        "image": "assets/images/burger.jpg",
+        "title": "Burger",
+        "timing": "45-50mins",
+      },
     ],
   ];
 
-
+  // Sample filter data
+  final List<String> filters = [
+    "Filters",
+    "Near & Fast",
+    "Gourmet",
+    "Great offers",
+    "Pure Veg",
+  ];
 
   @override
   void initState() {
     super.initState();
+    _loadCartCount();
 
     _getCurrentLocation();
 
@@ -82,7 +129,23 @@ class _HomePageState extends State<HomePage> {
 
     _setupScrollSync();
 
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.offset > 50 && showHome) {
+        setState(() => showHome = false);
+      } else if (_scrollController.offset <= 50 && !showHome) {
+        setState(() => showHome = true);
+      }
+    });
   }
+
+  Future<void> _loadCartCount() async {
+    int count = await CartService().getTotalCount();
+    setState(() {
+      cartCount = count;
+    });
+  }
+
 
   void _setupScrollSync() {
     for (int i = 0; i < _controllers.length; i++) {
@@ -115,13 +178,14 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-    @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xFFF8F8F8),
       body: Stack(
         children: [
           CustomScrollView(
+            controller: _scrollController,
             slivers: [
               SliverAppBar(
                 expandedHeight: 300,
@@ -209,6 +273,26 @@ class _HomePageState extends State<HomePage> {
 
                                   SizedBox(width: 10),
 
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Image.asset(
+                                      'assets/images/district.jpg',
+                                      fit: BoxFit.cover,
+                                      width: 60,
+                                      height: 35,
+                                    ),
+                                  ),
+
+                                  SizedBox(width: 10),
+
+                                  GestureDetector(
+                                    onTap: () {
+
+                                    },
+                                    child: AppCircleIcon(imagePath:"assets/images/wallet.png",backgroundColor: Colors.white, iconSize: 20,padding: 4)),
+
+                                  SizedBox(width: 10),
+
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.push(
@@ -230,51 +314,56 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                     ),
-
                                   ),
+
                                 ],
                               ),
 
                               SizedBox(height: 12),
 
-                              // Search bar
-                              Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(12),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SearchPage(),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    height: 48,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
+                              Row(
+                                children: [
+                                  // Search bar
+                                  Expanded(child: Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
                                       borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Colors.grey.shade300,
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => SearchPage(),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        height: 48,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(12),
+                                          border: Border.all(
+                                            color: Colors.grey.shade300,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.search, color: Colors.grey),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              "Search food",
+                                              style: TextStyle(color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                    child: Row(
-                                      children: [
-                                        Icon(Icons.search, color: Colors.grey),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          "Search food",
-                                          style: TextStyle(color: Colors.grey),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
+                                  )),
+                                  VegToggle()
+                                ],
+                              )
                             ],
                           ),
                         ),
@@ -288,6 +377,11 @@ class _HomePageState extends State<HomePage> {
               SliverPersistentHeader(
                 pinned: true,
                 delegate: CategoryScreen(categories),
+              ),
+
+
+              SliverToBoxAdapter(
+                child: HorizontalFilterBar(filters: filters, onTap: (int index, String value) {  },)
               ),
 
               SliverToBoxAdapter(
@@ -317,66 +411,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                       itemCount: rowsData[rowIndex].length,
                       itemBuilder: (context, index) {
-                        final item =
-                            rowsData[rowIndex][index];
-                        return Container(
-                          width: 140,
-                          margin: EdgeInsets.only(right: 12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              // Image
-                              ClipRRect(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(12),
-                                ),
-                                child: Image.asset(
-                                  item["image"]!,
-                                  height: 100,
-                                  width: double.infinity,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    item["title"]!,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    item["timing"]!,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: Colors.green
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
+                        final item = rowsData[rowIndex][index];
+                        return RestaurantCard(image: item["image"]??"",discount: item["discount"]??"50% OFF select item",name: item["title"]??"",rating: item["rating"]??"4.5",time: item["timing"]??"");
                       },
                     ),
                   ),
@@ -415,105 +451,165 @@ class _HomePageState extends State<HomePage> {
               ),
               // Restaurant list
               SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-
-                    final item = items[index];
-                    return
-                      Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          child: InkWell(
-                              borderRadius: BorderRadius.circular(16),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProductDetailPage(item: item),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final item = items[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 8,
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailPage(item: item),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 6,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              children: [
+                                /// 🔹 IMAGE
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(16),
                                   ),
-                                );
-                              },
-                     child:  Container(
-                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
+                                  child: Image.asset(
+                                    item["image"]!,
+                                    height: 180,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+
+                                /// 🔹 LEFT TEXT (e.g. "Pure Veg ₹200 for one")
+                                Positioned(
+                                  top: 8,
+                                  left: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.6),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      item["leftText"] ?? "Pure Veg ₹200 for one",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                /// 🔹 RIGHT TEXT / ICON (e.g. bookmark)
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.6),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.bookmark_border,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 4),
+
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                              child: Row(
+                                children: [
+                                  /// 🔹 TITLE
+                                  Expanded(
+                                    child: Text(
+                                      item["title"]!,
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+
+                                  /// 🔹 SPACE
+                                  const SizedBox(width: 6),
+
+                                  /// 🔹 RATING
+                                  RatingBadge(
+                                    rating: item["rating"] ?? "4.0",
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                              ),
+                              child: Text(
+                                item["time"]!,
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 2),
+
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                              ),
+                              child: Text(
+                                item["discount"]!,
+                                style: TextStyle(
+                                  color: Colors.grey[800],
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(height: 12),
+
+                          ],
+                        ),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                            child: Image.asset(
-                              item["image"]!,
-                              height: 180,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0,
-                            ),
-                            child: Text(
-                              item["title"]!,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0,
-                            ),
-                            child: Text(
-                              item["time"]!,
-                              style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 2),
-
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0,
-                            ),
-                            child: Text(
-                              item["discount"]!,
-                              style: TextStyle(
-                                color: Colors.grey[800],
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
-                          ),
-
-                          SizedBox(height: 12),
-                        ],
-                      ),
-                    )));
-                  },
-                  childCount: items.length,
-                ),
+                    ),
+                  );
+                }, childCount: items.length),
               ),
-              SliverToBoxAdapter(
-                child: SizedBox(height: 120),
-              ),
+              SliverToBoxAdapter(child: SizedBox(height: 120)),
             ],
           ),
 
@@ -521,92 +617,73 @@ class _HomePageState extends State<HomePage> {
             bottom: 24,
             left: 16,
             right: 0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Clickable text to open ViewCartPage
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => ViewCartPage()),
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                    child: Text(
-                      "View Cart",
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.orange, // highlight as clickable
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 8),
+            child: Bottomsheetscrollui(showHome: showHome))
 
                 // Existing bottom navigation row
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(50),
-                          boxShadow: const [
-                            BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 10,
-                                offset: Offset(0, 3))
-                          ],
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            _bottomItem(Icons.home, "Home"),
-                            _bottomItem(Icons.local_offer, "Under ₹250"),
-                            _bottomItem(Icons.discount, "Offers"),
-                            _bottomItem(Icons.restaurant, "Dining"),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    // Healthy Mode button
-                    Container(
-                      height: 50,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.green[700],
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(25),
-                          bottomLeft: Radius.circular(25),
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 8,
-                              offset: Offset(0, 3)),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _bottomItem(Icons.monitor_heart, "Healthy Mode"),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          )
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: Container(
+                //         height: 60,
+                //         decoration: BoxDecoration(
+                //           color: Colors.white,
+                //           borderRadius: BorderRadius.circular(50),
+                //           boxShadow: const [
+                //             BoxShadow(
+                //               color: Colors.black26,
+                //               blurRadius: 10,
+                //               offset: Offset(0, 3),
+                //             ),
+                //           ],
+                //         ),
+                //         padding: const EdgeInsets.symmetric(
+                //           horizontal: 12,
+                //           vertical: 12,
+                //         ),
+                //         child: Row(
+                //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //           children: [
+                //             _bottomItem(Icons.home, "Home"),
+                //             _bottomItem(Icons.local_offer, "Under ₹250"),
+                //             _bottomItem(Icons.discount, "Offers"),
+                //             _bottomItem(Icons.restaurant, "Dining"),
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //
+                //     const SizedBox(width: 12),
+                //
+                //     // Healthy Mode button
+                //     Container(
+                //       height: 50,
+                //       padding: const EdgeInsets.symmetric(horizontal: 16),
+                //       decoration: BoxDecoration(
+                //         color: Colors.green[700],
+                //         borderRadius: const BorderRadius.only(
+                //           topLeft: Radius.circular(25),
+                //           bottomLeft: Radius.circular(25),
+                //         ),
+                //         boxShadow: const [
+                //           BoxShadow(
+                //             color: Colors.black26,
+                //             blurRadius: 8,
+                //             offset: Offset(0, 3),
+                //           ),
+                //         ],
+                //       ),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+                //         children: [
+                //           _bottomItem(Icons.monitor_heart, "Healthy Mode"),
+                //         ],
+                //       ),
+                //     ),
+                //   ],
+                // ),
+              // ],
+            // ),
+          // ),
         ],
       ),
     );
@@ -654,24 +731,18 @@ class _HomePageState extends State<HomePage> {
     Placemark place = placemarks[0];
 
     setState(() {
-      currentLocation =
-          [
-                place.name,
-                place.subThoroughfare,
-                place.thoroughfare,
-                place.subLocality,
-                place.locality,
-                place.administrativeArea,
-                place.postalCode,
-                place.country,
-              ]
-              .where(
-                (e) => e != null && e!.trim().isNotEmpty,
-              )
-              .join(', ');
+      currentLocation = [
+        place.name,
+        place.subThoroughfare,
+        place.thoroughfare,
+        place.subLocality,
+        place.locality,
+        place.administrativeArea,
+        place.postalCode,
+        place.country,
+      ].where((e) => e != null && e!.trim().isNotEmpty).join(', ');
     });
   }
-
 }
 
 Widget _bottomItem(IconData icon, String label) {
