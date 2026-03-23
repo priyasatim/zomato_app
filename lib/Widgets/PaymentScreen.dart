@@ -48,7 +48,7 @@ class PaymentBottomSheet extends StatelessWidget {
               ),
             ),
 
-            /// 🔥 FIXED BOTTOM BAR (NO STACK)
+            /// FIXED BOTTOM BAR (NO STACK)
             Container(
               padding: const EdgeInsets.all(12),
               decoration: const BoxDecoration(

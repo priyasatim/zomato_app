@@ -26,7 +26,6 @@ class AppCircleIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget? child;
 
-    /// Decide what to show
     if (imagePath != null && imagePath!.isNotEmpty) {
       child = Image.asset(
         imagePath!,

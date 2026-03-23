@@ -113,7 +113,7 @@ class _SortSectionState extends State<SortSection> {
                           },
                         ),
 
-                        /// 🔻 Divider (skip last item)
+                        /// Divider (skip last item)
                         if (index != items.length - 1)
                           Divider(
                             height: 0.5,

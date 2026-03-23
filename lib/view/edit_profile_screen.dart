@@ -23,7 +23,6 @@ class EditProfilePage extends StatelessWidget {
 
   String? _selectedGender;
   File? _profileImage;
-  //  ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {

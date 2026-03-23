@@ -52,12 +52,12 @@ class ProductDetailPage extends StatelessWidget {
       appBar: AppBar(backgroundColor: Colors.white),
       body: Column(
         children: [
-          /// 🔹 1. FLAT OFFER SECTION
+          /// 1. FLAT OFFER SECTION
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.white, // ✅ moved here
+              color: Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -122,7 +122,7 @@ class ProductDetailPage extends StatelessWidget {
 
           const SizedBox(height: 12),
 
-          /// 🔹 2. FILTER SECTION (STICKY READY)
+          /// 2. FILTER SECTION (STICKY READY)
           Container(
             color: Colors.white,
             alignment: Alignment.centerLeft,
@@ -134,9 +134,8 @@ class ProductDetailPage extends StatelessWidget {
 
           const SizedBox(height: 2),
 
-          /// 🔹 3. PRODUCT SECTION
+          /// 3. PRODUCT SECTION
           Expanded(
-            // ✅ MOVE HERE
             child: Container(
               color: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 8),
@@ -230,10 +229,9 @@ class ProductDetailPage extends StatelessWidget {
 
                               // Right: Image + Add button
                               Stack(
-                                clipBehavior: Clip.none, // 👈 VERY IMPORTANT
+                                clipBehavior: Clip.none,
                                 alignment: Alignment.center,
                                 children: [
-                                  /// IMAGE
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.asset(
@@ -246,7 +244,7 @@ class ProductDetailPage extends StatelessWidget {
 
                                   /// QUANTITY BOX (half inside, half outside)
                                   Positioned(
-                                    bottom: -12, // 👈 move outside image
+                                    bottom: -12,
                                     left: 0,
                                     right: 0,
                                     child: Center(

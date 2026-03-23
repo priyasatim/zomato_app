@@ -117,12 +117,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     return Container(
       key: _sectionKeys[index],
 
-      /// 👇 remove vertical margin if no title
+      /// remove vertical margin if no title
       margin: hasTitle
           ? const EdgeInsets.symmetric(vertical: 10)
           : EdgeInsets.zero,
 
-      /// 👇 adjust padding
+      /// adjust padding
       padding: hasTitle
           ? const EdgeInsets.all(16)
           : const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -233,7 +233,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   ),
                 ),
 
-                /// 🔻 ADD DIVIDER HERE
+                /// ADD DIVIDER HERE
                 Container(
                   width: 0.5,
                   height: double.infinity,

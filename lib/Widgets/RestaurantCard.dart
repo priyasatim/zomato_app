@@ -25,7 +25,7 @@ class RestaurantCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// 🔥 Image with overlays
+          /// Image with overlays
           Stack(
             children: [
               ClipRRect(
@@ -38,7 +38,7 @@ class RestaurantCard extends StatelessWidget {
                 ),
               ),
 
-              /// 🎯 Discount Label
+              /// Discount Label
               Positioned(
                 top: 8,
                 left: 0,
@@ -60,7 +60,7 @@ class RestaurantCard extends StatelessWidget {
                 ),
               ),
 
-              /// ⭐ Rating Badge
+              /// Rating Badge
               Positioned(
                 bottom: 4,
                 left: 4,
@@ -71,7 +71,7 @@ class RestaurantCard extends StatelessWidget {
 
           const SizedBox(height: 6),
 
-          /// 🍽 Restaurant Name
+          /// Restaurant Name
           Text(
             name,
             maxLines: 1,
@@ -82,7 +82,7 @@ class RestaurantCard extends StatelessWidget {
             ),
           ),
 
-          /// ⏱ Time
+          /// Time
           Row(
             children: [
               const Icon(Icons.access_time, size: 14, color: Colors.grey),

@@ -3,7 +3,6 @@ import 'package:zomato_app/Widgets/SliderPage.dart';
 import 'package:zomato_app/Widgets/app_circle_icon.dart';
 import 'package:zomato_app/Widgets/explore_more.dart';
 import 'package:zomato_app/bloc/category/categories_repository.dart';
-import 'package:zomato_app/repository/category_repository.dart';
 import 'package:zomato_app/bloc/category/category_event.dart';
 import 'package:zomato_app/view/category_screen.dart';
 import 'package:zomato_app/view/product_details_screen.dart';
@@ -15,7 +14,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../Widgets/BottomSheetScrollUI.dart';
 import '../Widgets/FilterBottomSheet.dart';
 import '../Widgets/RestaurantCard.dart';
-import '../Widgets/horizontal_filter_bar.dart';
 import '../Widgets/rating_badge.dart';
 import '../Widgets/veg_nonveg_toggle.dart';
 import '../bloc/category/category_bloc.dart';
@@ -594,7 +592,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
 
-                                /// 🔹 RIGHT TEXT / ICON (e.g. bookmark)
+                                /// RIGHT TEXT / ICON (e.g. bookmark)
                                 Positioned(
                                   top: 8,
                                   right: 8,
@@ -619,7 +617,7 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.symmetric(horizontal: 6.0),
                               child: Row(
                                 children: [
-                                  /// 🔹 TITLE
+                                  /// TITLE
                                   Expanded(
                                     child: Text(
                                       item["title"]!,
@@ -633,10 +631,10 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
 
-                                  /// 🔹 SPACE
+                                  /// SPACE
                                   const SizedBox(width: 6),
 
-                                  /// 🔹 RATING
+                                  /// RATING
                                   RatingBadge(
                                     rating: item["rating"] ?? "4.0",
                                   ),
@@ -825,10 +823,10 @@ class _HomePageState extends State<HomePage> {
     String address = prefs.getString("address") ?? "";
 
     if (address.isEmpty) {
-      // 👉 No saved address → get current location
+      // No saved address → get current location
       _getCurrentLocation();
     } else {
-      // 👉 Address already saved
+      // Address already saved
       setState(() {
         currentLocation = address;
       });

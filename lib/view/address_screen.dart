@@ -337,7 +337,7 @@ class _LocationPageState extends State<LocationPage> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // 👇 LEFT: Icon + KM
+                              // LEFT: Icon + KM
                               Column(
                                 children: [
                                   Icon(Icons.home_outlined, color: Colors.grey),
@@ -354,7 +354,7 @@ class _LocationPageState extends State<LocationPage> {
 
                               SizedBox(width: 12),
 
-                              // 👇 RIGHT: Title + Address
+                              // RIGHT: Title + Address
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

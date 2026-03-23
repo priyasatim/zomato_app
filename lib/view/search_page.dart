@@ -50,7 +50,7 @@ class _SearchPageState extends State<SearchPage> {
                       hintText: "Search...",
                       hintStyle: TextStyle(color: Colors.grey),
 
-                      border: InputBorder.none, // 👈 remove underline
+                      border: InputBorder.none,
                     ),
                       onChanged: (value) {
                       setState(() {

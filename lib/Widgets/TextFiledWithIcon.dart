@@ -28,12 +28,12 @@ class AppTextField extends StatelessWidget {
         hintText: hintText,
         isDense: true,
 
-        /// 🔹 PREFIX ICON
+        /// PREFIX ICON
         prefixIcon: prefixIcon != null
             ? Icon(prefixIcon, size: 16)
             : null,
 
-        /// 🔹 SUFFIX ICON (optional click)
+        /// SUFFIX ICON (optional click)
         suffixIcon: suffixIcon != null
             ? GestureDetector(
           onTap: onSuffixTap,

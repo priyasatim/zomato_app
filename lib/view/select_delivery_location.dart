@@ -23,7 +23,7 @@ class _MapAutoCompletePageState extends State<MapAutoCompletePage> {
   final TextEditingController controller = TextEditingController();
 
   final String apiKey =
-      "AIzaSyAzx15rc8UbEQgUFAcYZlc5Xc0Kg7xOU5o"; // 🔴 add your key
+      "AIzaSyAzx15rc8UbEQgUFAcYZlc5Xc0Kg7xOU5o";
 
   String name = "";
   String mobile = "";
@@ -39,7 +39,6 @@ class _MapAutoCompletePageState extends State<MapAutoCompletePage> {
     return Scaffold(
       body: Stack(
         children: [
-          /// 🗺 GOOGLE MAP
           GoogleMap(
             initialCameraPosition: CameraPosition(
               target: initialPosition,
@@ -49,7 +48,6 @@ class _MapAutoCompletePageState extends State<MapAutoCompletePage> {
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
 
-            /// ✅ ADD THIS
             onTap: (LatLng position) async {
               FocusScope.of(context).unfocus(); // close search
 
@@ -78,7 +76,7 @@ class _MapAutoCompletePageState extends State<MapAutoCompletePage> {
                   },
           ),
 
-          /// 🔍 SEARCH BAR
+          /// SEARCH BAR
           Positioned(
             top: 50,
             left: 16,
@@ -105,10 +103,9 @@ class _MapAutoCompletePageState extends State<MapAutoCompletePage> {
                 debounceTime: 800,
                 countries: ["in"],
 
-                // optional
                 isLatLngRequired: true,
 
-                /// 📍 When user selects place
+                /// When user selects place
                 getPlaceDetailWithLatLng: (prediction) {
                   final lat = double.parse(prediction.lat!);
                   final lng = double.parse(prediction.lng!);
@@ -123,7 +120,7 @@ class _MapAutoCompletePageState extends State<MapAutoCompletePage> {
                   );
                 },
 
-                /// 👆 When user taps suggestion
+                /// When user taps suggestion
                 itemClick: (prediction) {
                   controller.text = prediction.description!;
                   controller.selection = TextSelection.fromPosition(
@@ -134,7 +131,7 @@ class _MapAutoCompletePageState extends State<MapAutoCompletePage> {
             ),
           ),
 
-          /// 📦 BOTTOM ADDRESS CARD
+          /// BOTTOM ADDRESS CARD
           Positioned(
             bottom: 20,
             left: 16,
@@ -302,7 +299,6 @@ class _MapAutoCompletePageState extends State<MapAutoCompletePage> {
       fontSize: 14.0,
     );
 
-    // 👉 Close screen
     Navigator.pop(context);
   }
 }

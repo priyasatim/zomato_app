@@ -26,7 +26,7 @@ class RadioItem extends StatelessWidget {
         child: Row(
           children: [
 
-            /// 📝 Text (left side)
+            /// Text (left side)
             Expanded(
               child: Text(
                 text,
@@ -41,7 +41,7 @@ class RadioItem extends StatelessWidget {
 
             const SizedBox(width: 12),
 
-            /// 🔘 Radio circle (right side)
+            /// Radio circle (right side)
             Container(
               width: 18,
               height: 18,

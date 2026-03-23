@@ -34,7 +34,6 @@ class IconTextChip extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            /// Decide what to show
             if (icon != null)
               Icon(
                 icon,

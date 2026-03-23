@@ -92,7 +92,7 @@ class _ViewCartPageState extends State<ViewCartPage> {
       ),
       body: Column(
         children: [
-          /// 🔹 SCROLLABLE CONTENT
+          /// SCROLLABLE CONTENT
           Expanded(
             child: ListView(
               padding: const EdgeInsets.only(bottom: 16),
@@ -199,7 +199,7 @@ class _ViewCartPageState extends State<ViewCartPage> {
 
                                         const SizedBox(width: 8),
 
-                                        /// 🔹 RIGHT COLUMN (Chip + Free)
+                                        /// RIGHT COLUMN (Chip + Free)
                                         Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.end,
@@ -282,7 +282,7 @@ class _ViewCartPageState extends State<ViewCartPage> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            /// 🔹 LEFT SIDE (name + icon)
+                            /// LEFT SIDE (name + icon)
                             Expanded(
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +319,7 @@ class _ViewCartPageState extends State<ViewCartPage> {
                               ),
                             ),
 
-                            /// 🔹 RIGHT SIDE (quantity)
+                            /// RIGHT SIDE (quantity)
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisSize: MainAxisSize.min,

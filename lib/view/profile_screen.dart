@@ -133,7 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           // User info card
           Padding(
-            padding: const EdgeInsets.all(16.0), // <-- this is your margin
+            padding: const EdgeInsets.all(16.0),
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
@@ -302,7 +302,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     padding: const EdgeInsets.all(6),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start, // 👈 important
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -314,7 +314,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                             const SizedBox(width: 8),
 
-                            // 👇 Text + Amount Column
+                            // Text + Amount Column
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: const [
