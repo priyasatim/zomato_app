@@ -1,59 +1,75 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zomato_app/view/view_cart_screen.dart';
 
-import '../view/view_cart_screen.dart';
+import '../Utility/app_colors.dart';
 
 class Bottomsheetscrollui extends StatelessWidget {
-  final double progress; // 0 → 1
+  final double progress;
+  final double baseBottom = 8;
 
-  const Bottomsheetscrollui({super.key, required this.progress});
+  const Bottomsheetscrollui({
+    super.key,
+    required this.progress,
+  });
+
 
   @override
+  @override
   Widget build(BuildContext context) {
-    double homeHeight = 72 * (1 - progress);
-    double homeOpacity = 1 - progress;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        /// CART + HEALTHY
-        Row(
+    return SizedBox(
+      height: 140,
+      child: Stack(
           children: [
-            Expanded(child: _viewCartBar(context)),
-
-            const SizedBox(width: 10),
-
-            /// Healthy button (smooth resize)
-            _healthyButton(progress < 0.5),
-          ],
-        ),
-
-        const SizedBox(height: 8),
-
-        /// HOME BAR (smooth collapse)
-        ClipRect(
-          child: Align(
-            heightFactor: (1 - progress).clamp(0.0, 1.0),
-            child: AnimatedOpacity(
-              duration: const Duration(milliseconds: 400),
+            /// HOME BAR (MOVES DOWN & OUT)
+            AnimatedPositioned(
+              duration: const Duration(milliseconds: 300),
               curve: Curves.easeInOut,
-              opacity: homeOpacity,
-              child: SizedBox(
-                height: homeHeight,
-                child: _homeWithHealthy(),
+
+              bottom: baseBottom + (progress * 70),
+
+              left: 12,
+              right: 100,
+
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 200),
+                opacity: (1 - progress).clamp(0.0, 1.0),
+                child: _homeBottomBar(),
               ),
             ),
-          ),
-        ),
-      ],
+
+            /// VIEW CART (MOVES FROM ROW1 → ROW2)
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: progress),
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              builder: (context, value, child) {
+                return Positioned(
+                  bottom: baseBottom + (70 * (1 - value)),
+                  left: 12,
+                  right: 10 + (value * 48), // ✅ now smooth
+                  child: child!,
+                );
+              },
+              child: _viewCartBar(context),
+            ),
+
+            /// HEALTHY (STAYS FIXED)
+            Positioned(
+              right: 0,
+              bottom: baseBottom,
+              child: _healthyButton(progress < 0.5),
+            ),
+          ],
+      ),
     );
   }
 }
 
-/// VIEW CART UI
-Widget _viewCartBar(BuildContext context) {
+Widget _viewCartBar(BuildContext context, {Key? key}) {
   return Container(
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    key: key,
+    height: 60,
+    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(30),
@@ -61,62 +77,51 @@ Widget _viewCartBar(BuildContext context) {
         BoxShadow(color: Colors.black12, blurRadius: 8),
       ],
     ),
-    child: Row(
-      children: [
-        const CircleAvatar(
-          radius: 18,
-          backgroundImage: AssetImage("assets/images/burger.png"),
-        ),
-        const SizedBox(width: 10),
-        const Expanded(
-          child: Text(
-            "McDonald's\nView Menu",
-            style: TextStyle(fontSize: 12),
-          ),
-        ),
-        GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ViewCartPage(),
-              ),
-            );
-          },
-          child: Container(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xffFF5A5F), Color(0xffFF2D55)],
-              ),
-              borderRadius: BorderRadius.circular(20),
+    child: SizedBox.expand(
+
+        child: Row(
+          children: [
+            const CircleAvatar(
+              radius: 16,
+              backgroundImage: AssetImage("assets/images/burger.png"),
             ),
-            child: const Text(
-              "View Cart",
-              style: TextStyle(color: Colors.white, fontSize: 12),
+            const SizedBox(width: 10),
+            const Expanded(
+              child: Text(
+                "McDonald's\nView Menu",
+                style: TextStyle(fontSize: 12),
+              ),
             ),
-          ),
-        ),
-      ],
-    ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ViewCartPage(),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xffFF5A5F), Color(0xffFF2D55)],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Text(
+                  "View Cart",
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+              ),
+            )        ],
+        )),
   );
 }
 
-/// HOME + HEALTHY
-Widget _homeWithHealthy() {
-  return Row(
-    children: [
-      Expanded(child: _homeBottomBar()),
-      const SizedBox(width: 12),
-      _healthyButton(true),
-    ],
-  );
-}
-
-/// HOME BAR
-Widget _homeBottomBar() {
+Widget _homeBottomBar({Key? key}) {
   return Container(
+    key: key,
     height: 60,
     decoration: BoxDecoration(
       color: Colors.white,
@@ -142,67 +147,32 @@ Widget _homeBottomBar() {
   );
 }
 
-/// HEALTHY BUTTON
 Widget _healthyButton(bool showText) {
   return AnimatedContainer(
-    duration: const Duration(milliseconds: 400),
-    curve: Curves.easeInOut,
+    duration: const Duration(milliseconds: 300),
     height: 60,
     width: showText ? 90 : 50,
-    padding: const EdgeInsets.symmetric(vertical: 6),
     decoration: BoxDecoration(
-      color: Colors.green[700],
+      color: AppColors.darkGreen,
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(25),
         bottomLeft: Radius.circular(25),
       ),
-      boxShadow: const [
-        BoxShadow(
-          color: Colors.black26,
-          blurRadius: 8,
-          offset: Offset(0, 3),
-        ),
-      ],
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.monitor_heart, color: Colors.white, size: 20),
-
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.easeInOut,
-          transitionBuilder: (child, animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: SizeTransition(
-                sizeFactor: animation,
-                axis: Axis.vertical,
-                child: child,
-              ),
-            );
-          },
-          child: showText
-              ? const Padding(
-            key: ValueKey("text"),
-            padding: EdgeInsets.only(top: 2),
-            child: Text(
-              "Healthy Mode",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-              ),
-            ),
-          )
-              : const SizedBox(key: ValueKey("empty")),
-        ),
+        const Icon(Icons.monitor_heart,
+            color: Colors.white, size: 20),
+        if (showText)
+          const Text(
+            "Healthy Mode",
+            style: TextStyle(color: Colors.white, fontSize: 10),
+          ),
       ],
     ),
   );
 }
-
-/// Bottom Item
 class _BottomItem extends StatelessWidget {
   final IconData icon;
   final String label;

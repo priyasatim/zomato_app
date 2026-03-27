@@ -16,19 +16,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../Widgets/BottomSheetScrollUI.dart';
 import '../Widgets/filter_bottom_sheet.dart';
 import '../Widgets/restaurant_card.dart';
-import '../Widgets/rating_badge.dart';
 import '../Widgets/veg_nonveg_toggle.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_state.dart';
 import '../bloc/explore/explore_bloc.dart';
-import '../bloc/explore/explore_event.dart';
 import '../bloc/restaurant/restaurant_bloc.dart';
-import '../bloc/restaurant/restaurant_repository.dart';
 import '../bloc/restaurant/restaurant_state.dart';
 import '../database/CartService.dart';
 import 'restaurant_list_item.dart';
 import 'category_riverpod_screen.dart';
-import '../bloc/explore/explore_repository.dart';
 import 'explore_riverpod_screen.dart';
 import 'address_screen.dart';
 import 'package:geolocator/geolocator.dart';
@@ -42,8 +38,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String locationPlace = "Home";
   String currentLocation = "Fetching location...";
-  List<ScrollController> _controllers = [];
-  bool _isSyncing = false;
   int cartCount = 0;
   late ScrollController _scrollController;
   double progress = 0;
@@ -129,15 +123,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     _loadCartCount();
     categoryBloc = CategoryBloc(repository: CategoriesRepository())
       ..add(LoadCategories());
 
     checkAddressAndFetch();
-
-    _controllers = List.generate(rowsData.length, (_) => ScrollController());
-
-    _setupScrollSync();
 
     _scrollController = ScrollController();
 
@@ -160,37 +151,6 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       cartCount = count;
     });
-  }
-
-  void _setupScrollSync() {
-    for (int i = 0; i < _controllers.length; i++) {
-      _controllers[i].addListener(() {
-        if (_isSyncing) return; // skip if we are syncing
-        _isSyncing = true;
-
-        double offset = _controllers[i].offset;
-        for (int j = 0; j < _controllers.length; j++) {
-          if (j != i && _controllers[j].hasClients) {
-            // Smoothly animate the other rows
-            _controllers[j].jumpTo(offset);
-          }
-        }
-
-        _isSyncing = false;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _disposeScrollSync();
-    super.dispose();
-  }
-
-  void _disposeScrollSync() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
   }
 
   @override
@@ -507,33 +467,39 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
 
-                // Dynamic horizontal rows
-                for (int rowIndex = 0; rowIndex < rowsData.length; rowIndex++)
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: 180, // increase height to fit image + text
-                      child: ListView.builder(
-                        controller: _controllers[rowIndex],
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        itemCount: rowsData[rowIndex].length,
-                        itemBuilder: (context, index) {
-                          final item = rowsData[rowIndex][index];
-                          return RestaurantCard(
-                            image: item["image"] ?? "",
-                            discount: item["discount"] ?? "50% OFF select item",
-                            name: item["title"] ?? "",
-                            rating: item["rating"] ?? "4.5",
-                            time: item["timing"] ?? "",
-                            category: item["category"] ?? "",
-                          );
-                        },
-                      ),
+                SliverToBoxAdapter(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Column(
+                      children: List.generate(rowsData.length, (rowIndex) {
+                        final row = rowsData[rowIndex];
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Row(
+                            children: row.map((item) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 12),
+                                child: SizedBox(
+                                  width: 140, // FIX width
+                                  child: RestaurantCard(
+                                    image: item["image"] ?? "",
+                                    discount: item["discount"] ?? "50% OFF",
+                                    name: item["title"] ?? "",
+                                    rating: item["rating"] ?? "4.5",
+                                    time: item["timing"] ?? "",
+                                    category: item["category"] ?? "",
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      }),
                     ),
                   ),
+                ),
 
                 BlocBuilder<ExploreBloc, ExploreState>(
                   builder: (context, state) {
@@ -641,8 +607,8 @@ class _HomePageState extends State<HomePage> {
             ),
 
             Positioned(
-              bottom: 24,
-              left: 16,
+              bottom: 12,
+              left: 0,
               right: 0,
 
               child: Bottomsheetscrollui(progress: progress),
