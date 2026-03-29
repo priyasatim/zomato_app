@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:zomato_app/Utility/app_colors.dart';
-import 'package:zomato_app/Widgets/sort_section.dart';
-import 'package:zomato_app/Widgets/text_with_icon.dart';
+import 'package:food_delivery_app/Utility/app_colors.dart';
+import 'package:food_delivery_app/Widgets/sort_section.dart';
+import 'package:food_delivery_app/Widgets/text_with_icon.dart';
 
 import 'option.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:zomato_app/database/CartService.dart';
-import 'package:zomato_app/view/home_screen.dart';
+import 'package:food_delivery_app/database/CartService.dart';
+import 'package:food_delivery_app/view/home_screen.dart';
 
 import 'bloc/category/categories_repository.dart';
 import 'bloc/category/category_bloc.dart';

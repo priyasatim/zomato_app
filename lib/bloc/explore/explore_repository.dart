@@ -1,5 +1,5 @@
 
-import 'package:zomato_app/model/explore_model.dart';
+import 'package:food_delivery_app/model/explore_model.dart';
 
 class ExploreRepository {
   Future<List<Explore>> fetchExplore() async {

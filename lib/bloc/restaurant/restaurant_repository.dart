@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:zomato_app/model/food_model.dart';
+import 'package:food_delivery_app/model/food_model.dart';
 
 class RestaurantRepository {
 

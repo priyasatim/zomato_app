@@ -1,4 +1,4 @@
-name: zomato_app
+name: food_delivery_app
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -46,12 +46,13 @@ dependencies:
   google_places_flutter: ^2.0.6
   flutter_riverpod: ^3.2.1
   fluttertoast: ^8.2.4
-
+  mockito: ^5.6.4
+  equatable: ^2.0.5
+  bloc_test: ^9.1.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

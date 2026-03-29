@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:zomato_app/bloc/category/categories_repository.dart';
-import 'package:zomato_app/model/food_model.dart';
+import 'package:food_delivery_app/bloc/category/categories_repository.dart';
+import 'package:food_delivery_app/model/food_model.dart';
 import '../bloc/explore/explore_repository.dart';
 import '../model/explore_model.dart';
 import '../model/category_model.dart';

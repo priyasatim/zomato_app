@@ -1,4 +1,4 @@
-import 'package:zomato_app/model/explore_model.dart';
+import 'package:food_delivery_app/model/explore_model.dart';
 
 import '../../model/category_model.dart';
 

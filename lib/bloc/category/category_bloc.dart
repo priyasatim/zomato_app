@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zomato_app/bloc/category/categories_repository.dart';
-import 'package:zomato_app/model/category_model.dart';
+import 'package:food_delivery_app/bloc/category/categories_repository.dart';
+import 'package:food_delivery_app/model/category_model.dart';
 import 'category_event.dart';
 import 'category_state.dart';
 

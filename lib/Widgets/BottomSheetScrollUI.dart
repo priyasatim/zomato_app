@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zomato_app/view/view_cart_screen.dart';
+import 'package:food_delivery_app/view/view_cart_screen.dart';
 
 import '../Utility/app_colors.dart';
 

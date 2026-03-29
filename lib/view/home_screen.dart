@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:zomato_app/Widgets/slider_page.dart';
-import 'package:zomato_app/Widgets/app_circle_icon.dart';
-import 'package:zomato_app/Widgets/explore_more_screen.dart';
-import 'package:zomato_app/bloc/category/categories_repository.dart';
-import 'package:zomato_app/bloc/category/category_event.dart';
-import 'package:zomato_app/bloc/explore/explore_state.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_event.dart';
-import 'package:zomato_app/view/category_screen.dart';
-import 'package:zomato_app/view/product_details_screen.dart';
-import 'package:zomato_app/view/profile_screen.dart';
-import 'package:zomato_app/view/search_page.dart';
+import 'package:food_delivery_app/Widgets/slider_page.dart';
+import 'package:food_delivery_app/Widgets/app_circle_icon.dart';
+import 'package:food_delivery_app/Widgets/explore_more_screen.dart';
+import 'package:food_delivery_app/bloc/category/categories_repository.dart';
+import 'package:food_delivery_app/bloc/category/category_event.dart';
+import 'package:food_delivery_app/bloc/explore/explore_state.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_event.dart';
+import 'package:food_delivery_app/view/category_screen.dart';
+import 'package:food_delivery_app/view/product_details_screen.dart';
+import 'package:food_delivery_app/view/profile_screen.dart';
+import 'package:food_delivery_app/view/search_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

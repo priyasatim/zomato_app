@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zomato_app/Widgets/rating_badge.dart';
+import 'package:food_delivery_app/Widgets/rating_badge.dart';
 
 class RestaurantCard extends StatelessWidget {
   final String image;

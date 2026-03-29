@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="zomato_app"
+        android:label="Food Delivery App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 

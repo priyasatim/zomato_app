@@ -1,202 +1,242 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../bloc/profile/profile_bloc.dart';
+import '../bloc/profile/profile_event.dart';
+import '../bloc/profile/profile_state.dart' hide ProfileState, ProfileSuccess, ProfileError, ProfileLoading;
 
-class EditProfilePage extends StatelessWidget {
-  var userName;
+class EditProfilePage extends StatefulWidget {
+  final String userName;
 
-  EditProfilePage({Key? key, required this.userName}) : super(key: key);
+  const EditProfilePage({Key? key, required this.userName})
+      : super(key: key);
 
-  late final TextEditingController _nameController = TextEditingController(
-    text: userName,
-  );
-  final TextEditingController _mobileController = TextEditingController(
-    text: "+91 9967019467",
-  );
-  final TextEditingController _emailController = TextEditingController(
-    text: "priyasatim@example.com",
-  );
+  @override
+  State<EditProfilePage> createState() => _EditProfilePageState();
+}
+
+class _EditProfilePageState extends State<EditProfilePage> {
+  SharedPreferences? prefs;
+
+  /// Controllers
+  late TextEditingController _nameController;
+  late TextEditingController _mobileController;
+  late TextEditingController _emailController;
   final TextEditingController _dobController = TextEditingController();
-  final TextEditingController _anniversaryController = TextEditingController();
+  final TextEditingController _anniversaryController =
+  TextEditingController();
 
   String? _selectedGender;
   File? _profileImage;
 
   @override
+  void initState() {
+    super.initState();
+
+    _nameController = TextEditingController(text: widget.userName);
+    _mobileController =
+        TextEditingController(text: "+91 9967019467");
+    _emailController =
+        TextEditingController(text: "priyasatim@example.com");
+
+    _loadPrefs();
+  }
+
+  Future<void> _loadPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Your Profile"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView (child: Column(
-          children: [
-            Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      // onTap: _showImagePickerOptions,
-                      child: Stack(
-                        children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundColor: Colors.grey[300],
-                            backgroundImage:
-                            _profileImage != null ? FileImage(_profileImage!) : null,
-                            child: _profileImage == null
-                                ? Icon(Icons.person, size: 50, color: Colors.grey[700])
-                                : null,
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 0,
-                            child: Container(
-                              padding: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Color(0xFFE23744),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(Icons.edit, color: Colors.white, size: 18),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    // Name field
-                    TextField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                        labelText: "Name",
-                        prefixIcon: Icon(Icons.person),
-                        isDense: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    // Mobile field
-                    TextField(
-                      controller: _mobileController,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: "Mobile",
-                        prefixIcon: Icon(Icons.phone),
-                        isDense: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 16),
-                    // Email field
-                    TextField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        prefixIcon: Icon(Icons.email),
-                        isDense: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
+    /// Wait until prefs loaded
+    if (prefs == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
-                    SizedBox(height: 16),
-
-                    // Date of Birth field
-                    TextField(
-                      controller: _dobController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: "Date of Birth",
-                        suffixIcon: Icon(Icons.calendar_today),
-                        isDense: true,
-                        border: OutlineInputBorder(),
-                      ),
-                      onTap: () => _selectDate(context, _dobController),
-                    ),
-
-                    SizedBox(height: 16),
-
-                    // Anniversary
-                    TextField(
-                      controller: _anniversaryController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        labelText: "Anniversary",
-                        suffixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(),
-                        isDense: true,
-                      ),
-                      onTap: () => _selectDate(context, _anniversaryController),
-                    ),
-
-                    SizedBox(height: 16),
-
-                    // Gender
-                    DropdownButtonFormField<String>(
-                      value: _selectedGender,
-                      decoration: InputDecoration(
-                        labelText: "Gender",
-                        border: OutlineInputBorder(),
-                        isDense: true
-                      ),
-                      items: ["Male", "Female", "Other"]
-                          .map(
-                            (gender) => DropdownMenuItem(
-                              value: gender,
-                              child: Text(gender),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (value) {
-
-                      },
-                    ),
-                  ],
-                ),
-              ),
-
-            SizedBox(height: 24),
-
-            // Save button
-            SizedBox(
-              height: 48,
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  saveUserData();
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text("Profile saved!")));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFE23744),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+    return BlocProvider(
+      create: (_) => ProfileBloc(prefs!), // ✅ FIXED
+      child: BlocListener<ProfileBloc, ProfileState>(
+        listener: (context, state) {
+          if (state is ProfileSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Profile updated successfully")),
+            );
+          } else if (state is ProfileError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          }
+        },
+        child: Scaffold(
+          appBar: AppBar(title: const Text("Your Profile")),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  /// PROFILE IMAGE
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.grey[300],
+                    backgroundImage: _profileImage != null
+                        ? FileImage(_profileImage!)
+                        : null,
+                    child: _profileImage == null
+                        ? const Icon(Icons.person, size: 50)
+                        : null,
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                ),
-                child: Text("Update Profile", style: TextStyle(fontSize: 12,color: Colors.white)),
+
+                  const SizedBox(height: 16),
+
+                  /// NAME
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      labelText: "Name",
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  /// MOBILE
+                  TextField(
+                    controller: _mobileController,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      labelText: "Mobile",
+                      prefixIcon: Icon(Icons.phone),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  /// EMAIL
+                  TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      prefixIcon: const Icon(Icons.email),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  /// DOB
+                  TextField(
+                    controller: _dobController,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: "Date of Birth",
+                      suffixIcon: Icon(Icons.calendar_today),
+                      border: OutlineInputBorder(),
+                    ),
+                    onTap: () => _selectDate(context, _dobController),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  /// ANNIVERSARY
+                  TextField(
+                    controller: _anniversaryController,
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      labelText: "Anniversary",
+                      suffixIcon: Icon(Icons.calendar_today),
+                      border: OutlineInputBorder(),
+                    ),
+                    onTap: () =>
+                        _selectDate(context, _anniversaryController),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  /// GENDER
+                  DropdownButtonFormField<String>(
+                    value: _selectedGender,
+                    decoration: const InputDecoration(
+                      labelText: "Gender",
+                      border: OutlineInputBorder(),
+                    ),
+                    items: ["Male", "Female", "Other"]
+                        .map(
+                          (gender) => DropdownMenuItem(
+                        value: gender,
+                        child: Text(gender),
+                      ),
+                    )
+                        .toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedGender = value;
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  /// BUTTON (BlocBuilder)
+                  BlocBuilder<ProfileBloc, ProfileState>(
+                    builder: (context, state) {
+                      return SizedBox(
+                        height: 48,
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: state is ProfileLoading
+                              ? null
+                              : () {
+                            context.read<ProfileBloc>().add(
+                              UpdateProfileEvent(
+                                name: _nameController.text,
+                                mobile: _mobileController.text,
+                                email: _emailController.text,
+                                dob: _dobController.text,
+                                anniversary: "",
+                                gender: _selectedGender ?? "",
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFE23744),
+                          ),
+                          child: state is ProfileLoading
+                              ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                              : const Text(
+                            "Update Profile",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-          ],
-        ),),
+          ),
+        ),
       ),
     );
   }
 
+  /// DATE PICKER
   Future<void> _selectDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime(2000),
@@ -206,17 +246,7 @@ class EditProfilePage extends StatelessWidget {
 
     if (pickedDate != null) {
       controller.text =
-          "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+      "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
     }
-  }
-
-
-  Future<void> saveUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setString("name", _nameController.text);
-    await prefs.setString("mobile", _mobileController.text);
-    await prefs.setString("dob", _dobController.text);
-    await prefs.setString("gender", _selectedGender ?? "");
   }
 }

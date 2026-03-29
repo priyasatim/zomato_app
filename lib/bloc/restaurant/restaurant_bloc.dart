@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_event.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_repository.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_state.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_event.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_repository.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_state.dart';
 
 class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantBlocState> {
   final RestaurantRepository repository;

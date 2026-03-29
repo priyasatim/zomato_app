@@ -1,16 +1,16 @@
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/bloc/restaurant/restaurant_bloc.dart';
-import 'package:zomato_app/model/explore_model.dart';
-import 'package:zomato_app/model/food_model.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/bloc/restaurant/restaurant_bloc.dart';
+import 'package:food_delivery_app/model/explore_model.dart';
+import 'package:food_delivery_app/model/food_model.dart';
 
 import '../../model/category_model.dart';
 

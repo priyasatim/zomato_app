@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zomato_app/utility/app_colors.dart';
-import 'package:zomato_app/view/edit_profile_screen.dart';
+import 'package:food_delivery_app/utility/app_colors.dart';
+import 'package:food_delivery_app/view/edit_profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Widgets/app_circle_icon.dart';

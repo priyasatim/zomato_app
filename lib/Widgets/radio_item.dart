@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:zomato_app/Utility/app_colors.dart';
+import 'package:food_delivery_app/Utility/app_colors.dart';
 
 class RadioItem extends StatelessWidget {
   final String text;
